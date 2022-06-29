@@ -2,22 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class Form extends React.Component {
-//   constructor() {
-//     super();
-
-  //     this.handleChange = this.handleChange.bind(this);
-
-  //     this.state = {
-  //       teste: '',
-  //     };
-  //   }
-
-  //   handleChange(event) {
-  //     this.setState({
-  //       teste: event.target.value,
-  //     });
-  //   }
-
   render() {
     const {
       cardName,
@@ -27,16 +11,31 @@ class Form extends React.Component {
       cardAttr3,
       cardImage,
       cardRare,
-      cardTrunfo,
-      // hasTrunfo,
       isSaveButtonDisabled,
       onInputChange,
       onSaveButtonClick,
+      cardTrunfo,
+      hasTrunfo,
     } = this.props;
+
+    const checkHasTrunfo = (
+      <label htmlFor="input-trunfo">
+        Super Trybe Trunfo
+        <input
+          type="checkbox"
+          id="input-trunfo"
+          data-testid="trunfo-input"
+          name="cardTrunfo"
+          checked={ cardTrunfo }
+          onChange={ onInputChange }
+        />
+      </label>
+    );
+
     return (
 
       <div>
-        <form className="form">
+        <form className="form" onSubmit={ (e) => e.preventDefault() }>
           <h2>Adicionar Nova Carta</h2>
           <label htmlFor="Name:">
             Name:
@@ -111,19 +110,13 @@ class Form extends React.Component {
               <option value="muito raro">muito raro</option>
             </select>
           </label>
-          <label htmlFor="check-box">
-            Super Trunfo
-            <input
-              type="checkbox"
-              data-testid="trunfo-input"
-              name="cardTrunfo"
-              checked={ cardTrunfo }
-              onChange={ onInputChange }
-            />
-          </label>
+          {
+            hasTrunfo ? <p>Você já tem um Super Trunfo em seu baralho</p>
+              : checkHasTrunfo
+          }
           <div>
             <button
-              type="button"
+              type="submit"
               data-testid="save-button"
               name="isSaveButtonDisabled"
               disabled={ isSaveButtonDisabled }
@@ -148,7 +141,6 @@ Form.propTypes = {
   cardImage: PropTypes.string,
   cardRare: PropTypes.string,
   cardTrunfo: PropTypes.bool,
-  hasTrunfo: PropTypes.bool,
   isSaveButtonDisabled: PropTypes.bool,
   onInputChange: PropTypes.func,
   onSaveButtonClick: PropTypes.func,

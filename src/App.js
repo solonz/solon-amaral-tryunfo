@@ -2,115 +2,128 @@ import React from 'react';
 import Form from './components/Form';
 import Card from './components/Card';
 
+const initialState = {
+  cardName: '',
+  cardDescription: '',
+  cardAttr1: 0,
+  cardAttr2: 0,
+  cardAttr3: 0,
+  cardImage: '',
+  cardRare: 'normal',
+  cardTrunfo: false,
+  isSaveButtonDisabled: true,
+};
 class App extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      cardName: '',
-      cardDescription: '',
-      cardAttr1: '',
-      cardAttr2: '',
-      cardAttr3: '',
-      cardImage: '',
-      cardRare: '',
-      cardTrunfo: '',
-      // hasTrunfo: false,
-      isSaveButtonDisabled: true,
-      myCards: [],
+      ...initialState,
+      // myCards: [],
     };
   }
 
-   checkButton = () => {
-     const {
-       cardName,
-       cardImage,
-       cardDescription,
-       cardAttr1,
-       cardAttr2,
-       cardAttr3,
-     } = this.state;
+  onInputChange = ({ target }) => {
+    const { name } = target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.setState({ [name]: value }, this.checkButton);
+  };
 
-     const maxValue = 90;
-     const maxSum = 210;
-     const hasNoEmptyFields = [cardName, cardDescription, cardImage]
-       .every((e) => e !== '');
+  onSaveButtonClick = () => {
+    const { cardTrunfo } = this.state;
+    this.handleClearInput();
+    this.setState({
+      hasTrunfo: cardTrunfo,
+    });
+  }
 
-     const atributtesLimit = [cardAttr1, cardAttr2, cardAttr3]
-       .every((e) => Number(e) <= maxValue && Number(e) >= 0 && e !== '')
-        && (Number(cardAttr1) + Number(cardAttr2) + Number(cardAttr3)) <= maxSum;
+  checkButton = () => {
+    const {
+      cardName,
+      cardImage,
+      cardDescription,
+      cardAttr1,
+      cardAttr2,
+      cardAttr3,
+    } = this.state;
 
-     this.setState({ isSaveButtonDisabled: !(hasNoEmptyFields && atributtesLimit) });
-   };
+    const maxValue = 90;
+    const maxSum = 210;
+    const hasNoEmptyFields = [cardName, cardDescription, cardImage]
+      .every((e) => e !== '');
 
-   onInputChange = ({ target }) => {
-     const { name } = target;
-     const value = target.type === 'checkbox' ? target.checked : target.value;
-     this.setState({ [name]: value }, this.checkButton);
-   };
+    const atributtesLimit = [cardAttr1, cardAttr2, cardAttr3]
+      .every((e) => Number(e) <= maxValue && Number(e) >= 0 && e !== '')
+       && (Number(cardAttr1) + Number(cardAttr2) + Number(cardAttr3)) <= maxSum;
 
-   onSaveButtonClick = () => {
-     const prevState = {
-       cardName: '',
-       cardDescription: '',
-       cardAttr1: '0',
-       cardAttr2: '0',
-       cardAttr3: '0',
-       cardImage: '',
-       cardRare: 'normal',
-       cardTrunfo: '',
-       // hasTrunfo: false,
-       isSaveButtonDisabled: true,
-     };
-     this.setState((e) => ({
-       myCards: [e.myCards, this.setState(prevState)],
-     }));
-   }
+    this.setState({ isSaveButtonDisabled:
+     !(hasNoEmptyFields && atributtesLimit) });
+  };
 
-   render() {
-     const {
-       cardName,
-       cardImage,
-       cardDescription,
-       cardAttr1,
-       cardAttr2,
-       cardAttr3,
-       cardRare,
-       cardTrunfo,
-       // hasTrunfo,
-       isSaveButtonDisabled,
-       //  onSaveButtonClick,
-     } = this.state;
+  handleClearInput = () => {
+    this.setState({
+      cardName: '',
+      cardDescription: '',
+      cardAttr1: 0,
+      cardAttr2: 0,
+      cardAttr3: 0,
+      cardImage: '',
+      cardRare: 'normal',
+      cardTrunfo: false,
+      hasTrunfo: false,
+    });
+  }
 
-     return (
-       <div>
-         <h1>Tryunfo</h1>
-         <Form
-           onInputChange={ this.onInputChange }
-           cardName={ cardName }
-           cardDescription={ cardDescription }
-           cardAttr1={ cardAttr1 }
-           cardAttr2={ cardAttr2 }
-           cardAttr3={ cardAttr3 }
-           cardImage={ cardImage }
-           cardRare={ cardRare }
-           cardTrunfo={ cardTrunfo }
-           isSaveButtonDisabled={ isSaveButtonDisabled }
-           onSaveButtonClick={ this.onSaveButtonClick }
-         />
-         <Card
-           cardName={ cardName }
-           cardImage={ cardImage }
-           cardDescription={ cardDescription }
-           cardAttr1={ cardAttr1 }
-           cardAttr2={ cardAttr2 }
-           cardAttr3={ cardAttr3 }
-           cardRare={ cardRare }
-           cardTrunfo={ cardTrunfo }
-         />
-       </div>
-     );
-   }
+  render() {
+    const {
+      cardName,
+      cardImage,
+      cardDescription,
+      cardAttr1,
+      cardAttr2,
+      cardAttr3,
+      cardRare,
+      cardTrunfo,
+      hasTrunfo,
+      isSaveButtonDisabled,
+      // myCards,
+    } = this.state;
+
+    return (
+      <div>
+        <h1>Tryunfo</h1>
+        <Form
+          onInputChange={ this.onInputChange }
+          cardName={ cardName }
+          cardDescription={ cardDescription }
+          cardAttr1={ cardAttr1 }
+          cardAttr2={ cardAttr2 }
+          cardAttr3={ cardAttr3 }
+          cardImage={ cardImage }
+          cardRare={ cardRare }
+          hasTrunfo={ hasTrunfo }
+          isSaveButtonDisabled={ isSaveButtonDisabled }
+          onSaveButtonClick={ this.onSaveButtonClick }
+          clearInput={ this.handleClearInput }
+        />
+        <Card
+          cardName={ cardName }
+          cardImage={ cardImage }
+          cardDescription={ cardDescription }
+          cardAttr1={ cardAttr1 }
+          cardAttr2={ cardAttr2 }
+          cardAttr3={ cardAttr3 }
+          cardRare={ cardRare }
+          cardTrunfo={ cardTrunfo }
+        />
+        {/* <div>
+          { myCards.map((card) => (
+            <Card key={ card.cardName } { ...card } />
+          ))}
+        </div> */}
+      </div>
+    );
+  }
 }
 
 export default App;
