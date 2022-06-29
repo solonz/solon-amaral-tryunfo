@@ -17,6 +17,7 @@ class App extends React.Component {
       cardTrunfo: '',
       // hasTrunfo: false,
       isSaveButtonDisabled: true,
+      myCards: [],
     };
   }
 
@@ -28,24 +29,16 @@ class App extends React.Component {
        cardAttr1,
        cardAttr2,
        cardAttr3,
-       cardRare,
-       cardTrunfo,
-       // hasTrunfo,
-       isSaveButtonDisabled,
-       // onSaveButtonClick,
      } = this.state;
 
-     const maxNumber = 90;
-     const maxChars = 210;
+     const maxValue = 90;
+     const maxSum = 210;
      const hasNoEmptyFields = [cardName, cardDescription, cardImage]
        .every((e) => e !== '');
 
      const atributtesLimit = [cardAttr1, cardAttr2, cardAttr3]
-       .every((e) => Number(e) <= maxNumber && Number(e) >= 0 && e !== '')
-        && (Number(cardAttr1) + Number(cardAttr2) + Number(cardAttr3)) <= maxChars;
-
-     console.log(atributtesLimit);
-     console.log(hasNoEmptyFields);
+       .every((e) => Number(e) <= maxValue && Number(e) >= 0 && e !== '')
+        && (Number(cardAttr1) + Number(cardAttr2) + Number(cardAttr3)) <= maxSum;
 
      this.setState({ isSaveButtonDisabled: !(hasNoEmptyFields && atributtesLimit) });
    };
@@ -53,9 +46,26 @@ class App extends React.Component {
    onInputChange = ({ target }) => {
      const { name } = target;
      const value = target.type === 'checkbox' ? target.checked : target.value;
-     this.setState(({ [name]: value }), this.checkButton);
-     // checkButton();
+     this.setState({ [name]: value }, this.checkButton);
    };
+
+   onSaveButtonClick = () => {
+     const prevState = {
+       cardName: '',
+       cardDescription: '',
+       cardAttr1: '0',
+       cardAttr2: '0',
+       cardAttr3: '0',
+       cardImage: '',
+       cardRare: 'normal',
+       cardTrunfo: '',
+       // hasTrunfo: false,
+       isSaveButtonDisabled: true,
+     };
+     this.setState((e) => ({
+       myCards: [e.myCards, this.setState(prevState)],
+     }));
+   }
 
    render() {
      const {
@@ -69,7 +79,7 @@ class App extends React.Component {
        cardTrunfo,
        // hasTrunfo,
        isSaveButtonDisabled,
-       // onSaveButtonClick,
+       //  onSaveButtonClick,
      } = this.state;
 
      return (
@@ -86,6 +96,7 @@ class App extends React.Component {
            cardRare={ cardRare }
            cardTrunfo={ cardTrunfo }
            isSaveButtonDisabled={ isSaveButtonDisabled }
+           onSaveButtonClick={ this.onSaveButtonClick }
          />
          <Card
            cardName={ cardName }
